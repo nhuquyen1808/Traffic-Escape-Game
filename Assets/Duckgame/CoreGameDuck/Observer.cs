@@ -11,15 +11,8 @@ namespace DevDuck
     {
         EVENT_POPUP_SHOW,
         EVENT_POPUP_CLOSE,
-        EVENT_HEALTH_CHANGE,
-        EVENT_PLAYER_DEAD,
-        EVENT_HITTARGET_MINIGAMEHITLIPSTICK,
 
-
-        // Game6
-        EVENT_GET_GREEN,
-        EVENT_GET_RED,
-
+        EVENT_CAR_DONE_ACTION
     }
 
     public class Observer
