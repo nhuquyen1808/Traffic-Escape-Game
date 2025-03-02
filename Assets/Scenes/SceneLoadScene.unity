@@ -1009,7 +1009,7 @@ MonoBehaviour:
   startPos: {x: 0, y: 0, z: 0}
   dummyTarget: {fileID: 809610616}
   ListPosition: []
-  delayTime: 0
+  delayTime: 0.1
   carLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -1086,6 +1086,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dbbbe857b1a3a242ae5ecb986abfaeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  isCanClick: 1
 --- !u!4 &815568872
 Transform:
   m_ObjectHideFlags: 0

@@ -48,103 +48,100 @@ public class Car : MonoBehaviour
 
     public void CarMovement()
     {
-        //  if (carClicked)
+        ListPosition.Add(startPos);
+        MapPoint current = from;
+        MapPoint last = null;
+        bool aChance = true;
+        for (int i = 0; i >= 0 && i < ListDirection.Count; ++i)
         {
-            ListPosition.Add(startPos);
-            MapPoint current = from;
-            MapPoint last = null;
-            bool aChance = true;
-            for (int i = 0; i >= 0 && i < ListDirection.Count; ++i)
+            last = current;
+            switch (ListDirection[i])
             {
-                last = current;
-                switch (ListDirection[i])
-                {
-                    case Directions.UP:
-                        current = current.up;
-                        break;
-                    case Directions.DOWN:
-                        current = current.down;
-                        break;
-                    case Directions.LEFT:
-                        current = current.left;
-                        break;
-                    case Directions.RIGHT:
-                        current = current.right;
-                        break;
-                }
-                // 
-                if (current != null)
-                {
-                    aChance = true;
-
-                    ListPosition.Add(current.transform.position);
-                    if (i == ListDirection.Count - 1)
-                    {
-                        ListPosition.Add(current.transform.position + (current.transform.position - last.transform.position).normalized * 100);
-                    }
-                }
-                //        
-                else if (aChance)
-                {
-                    i -= 2;
-                    current = last;
-                    aChance = false;
-                }
-                else break;
+                case Directions.UP:
+                    current = current.up;
+                    break;
+                case Directions.DOWN:
+                    current = current.down;
+                    break;
+                case Directions.LEFT:
+                    current = current.left;
+                    break;
+                case Directions.RIGHT:
+                    current = current.right;
+                    break;
             }
-
-            //Kiem tra o to co di duoc hay khong
-            for (int i = 1; i < ListPosition.Count; ++i)
+            // 
+            if (current != null)
             {
-                Vector3 temp = ListPosition[i] - ListPosition[i - 1];
+                aChance = true;
 
-                if (Physics.Raycast(ListPosition[i - 1] + new Vector3(0, 0.5f, 0), temp, out hitInfo, temp.magnitude, carLayer))
+                ListPosition.Add(current.transform.position);
+                if (i == ListDirection.Count - 1)
                 {
-                    check.Add(1);
-
-                }
-                /* else if (Physics.Raycast(ListPosition[i - 1] + new Vector3(0, 0.5f, 0), temp, out hitInfo, temp.magnitude, human))
-                 {
-                     check.Add(1);
-
-                 }*/
-                else
-                {
-                    check.Add(0);
-                    carCanMove++;
-
+                    ListPosition.Add(current.transform.position + (current.transform.position - last.transform.position).normalized * 100);
                 }
             }
-
-            t = 0;
-            sequence = DOTween.Sequence();
-            sequence.PrependInterval(delayTime);
-            sequenceDummy = DOTween.Sequence();
-
-            for (int i = 1; i < ListPosition.Count; ++i)
+            //        
+            else if (aChance)
             {
-                Vector3 temp = ListPosition[i] - ListPosition[i - 1];
-                //  (listPosition[i] - listPosition[i - 1]).magnitude / 10 :  time = distance / velocity ;
-
-                sequence.PrependCallback(() => { canInsCoin = true; });
-
-                sequence.Append(transform.DOMove(ListPosition[i], (ListPosition[i] - ListPosition[i - 1]).magnitude / 25f)
-                    .OnUpdate(() =>
-                    {
-                        if (ListDirection.Count == 1) return;
-                        Vector3 angle = (dummyTarget.transform.position - transform.position).normalized;
-                        float v = Mathf.Atan2(angle.z, -angle.x) * Mathf.Rad2Deg;
-                        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, v - 90, 0), 20f);
-                        //PosToInstantiateCoin();
-                    })
-                    .OnComplete(() =>
-                    {
-                        ++t;
-                    }
-                ).SetEase(Ease.Linear)).SetAutoKill(true);
-
-                sequenceDummy.Append(dummyTarget.DOMove(ListPosition[i], (ListPosition[i] - ListPosition[i - 1]).magnitude / 25f).SetEase(Ease.Linear)).SetAutoKill(true);
+                i -= 2;
+                current = last;
+                aChance = false;
             }
+            else break;
+        }
+
+        //Kiem tra o to co di duoc hay khong
+        for (int i = 1; i < ListPosition.Count; ++i)
+        {
+            Vector3 temp = ListPosition[i] - ListPosition[i - 1];
+
+            if (Physics.Raycast(ListPosition[i - 1] + new Vector3(0, 0.5f, 0), temp, out hitInfo, temp.magnitude, carLayer))
+            {
+                check.Add(1);
+
+            }
+            /* else if (Physics.Raycast(ListPosition[i - 1] + new Vector3(0, 0.5f, 0), temp, out hitInfo, temp.magnitude, human))
+             {
+                 check.Add(1);
+
+             }*/
+            else
+            {
+                check.Add(0);
+                carCanMove++;
+
+            }
+        }
+
+        t = 0;
+        sequence = DOTween.Sequence();
+        sequence.PrependInterval(delayTime);
+        sequenceDummy = DOTween.Sequence();
+
+        for (int i = 1; i < ListPosition.Count; ++i)
+        {
+            Vector3 temp = ListPosition[i] - ListPosition[i - 1];
+            //  (listPosition[i] - listPosition[i - 1]).magnitude / 10 :  time = distance / velocity ;
+
+            sequence.PrependCallback(() => { canInsCoin = true; });
+
+            sequence.Append(transform.DOMove(ListPosition[i], (ListPosition[i] - ListPosition[i - 1]).magnitude / 25f)
+                .OnUpdate(() =>
+                {
+                    if (ListDirection.Count == 1) return;
+                    Vector3 angle = (dummyTarget.transform.position - transform.position).normalized;
+                    float v = Mathf.Atan2(angle.z, -angle.x) * Mathf.Rad2Deg;
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, v - 90, 0), 20f);
+                    //PosToInstantiateCoin();
+                })
+                .OnComplete(() =>
+                {
+                    ++t;
+                }
+            ).SetEase(Ease.Linear)).SetAutoKill(true);
+
+            sequenceDummy.Append(dummyTarget.DOMove(ListPosition[i], (ListPosition[i] - ListPosition[i - 1]).magnitude / 25f).SetEase(Ease.Linear)).SetAutoKill(true);
         }
     }
     public List<int> check;
@@ -154,7 +151,10 @@ public class Car : MonoBehaviour
 
         if (col.gameObject.CompareTag("Car"))
         {
+            Observer.Notify(EventAction.EVENT_CAR_DONE_ACTION, true);
+
             Car carPref = col.transform.GetComponent<Car>();
+            //carPref.ShakeCar(transform.forward, carPref.startPos);
             sequence.Pause();
             sequenceDummy.Pause();
             dummyTarget.position = transform.position;
@@ -181,9 +181,9 @@ public class Car : MonoBehaviour
                         Observer.Notify(EventAction.EVENT_CAR_DONE_ACTION, true);
                         ListPosition.Clear();
                         carClicked = false;
-
+                        Debug.Log("Can click");
                     }
-                }));
+                })).SetAutoKill(true);
                 sequenceDummy.Append(dummyTarget.DOMove(ListPosition[i], (ListPosition[i + 1] - ListPosition[i]).magnitude / 15f).SetEase(Ease.Linear)).SetAutoKill(true);
             }
 
@@ -192,7 +192,6 @@ public class Car : MonoBehaviour
     public bool checkHitRedLight;
     public int count;
 
-
     public bool isShake;
     private void ShakeCar(Vector3 dir, Vector3 startPosition)
     {
@@ -200,12 +199,9 @@ public class Car : MonoBehaviour
         Vector3 des = startPosition + dir;
         transform.DOMove(des, /*(des - startPosition).magnitude /5f*/ 0.2f).OnComplete(() =>
         {
-            transform.DOMove(startPosition, /*(des - startPosition).magnitude / 5*/ 0.2f).OnComplete(() =>
-            {
-            });
+            transform.DOMove(startPosition, /*(des - startPosition).magnitude / 5*/ 0.2f);
         });
     }
-
     public void PosToInstantiateCoin()
     {
         var bounds = meshCol.bounds;
@@ -230,7 +226,6 @@ public class Car : MonoBehaviour
         }
 
     }
-
 
     void AddPoint()
     {
@@ -267,7 +262,7 @@ public class Car : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
+
     }
 
 }

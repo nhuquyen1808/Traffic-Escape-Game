@@ -4,11 +4,11 @@ using UnityEngine;
 public class LogicGame : MonoBehaviour
 {
 
-    LayerMask carLayer;
+    [SerializeField] LayerMask carLayer;
     Camera cam;
     RaycastHit hit;
 
-    private bool isCanClick = true;
+    public bool isCanClick = true;
 
     void Start()
     {
@@ -26,15 +26,14 @@ public class LogicGame : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && isCanClick)
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+           Ray mousePos = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(mousePos,out hit, Mathf.Infinity,carLayer))
             {
                 Car car = hit.collider.gameObject.GetComponent<Car>();
                 if (car == null) return;
-
                 isCanClick = false;
-               // car.carClicked = true;
                 car.CarMovement();
+                Debug.Log(car.transform.name);
             }
         }
     }
