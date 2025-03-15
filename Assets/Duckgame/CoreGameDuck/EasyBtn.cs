@@ -6,8 +6,8 @@ using UnityEngine.UI;
 using UnityEditor;
 
 
-[CustomEditor(typeof(EasyBtn))]
-public class AutoAddRef : Editor
+//[CustomEditor(typeof(EasyBtn))]
+/*public class AutoAddRef : Editor
 {
     public override void OnInspectorGUI()
     {
@@ -22,9 +22,9 @@ public class AutoAddRef : Editor
             }
         }
     }
-}
-public class EasyBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
-{
+}*/
+public class EasyBtn : MonoBehaviour/*, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler*/
+{/*
     public Action PointerDownAction, PointerUpAction, PointerClickAction;
     public Image img;
     public void OnPointerClick(PointerEventData eventData)
@@ -53,7 +53,7 @@ public class EasyBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IP
     public void OnPointerUp(PointerEventData eventData)
     {
         PointerUpAction?.Invoke();
-    }
+    }*/
 
 
 }

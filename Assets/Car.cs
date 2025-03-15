@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
-using TMPro;
 using DevDuck;
 
 public enum Directions
@@ -14,7 +11,6 @@ public enum Directions
     LEFT
 }
 
-
 public class Car : MonoBehaviour
 {
     [SerializeField] List<Directions> ListDirection;
@@ -22,7 +18,6 @@ public class Car : MonoBehaviour
 
     public Vector3 startPos;
     public Transform dummyTarget;
-
     public List<Vector3> ListPosition = new List<Vector3>();
     [SerializeField] float delayTime;
     public LayerMask carLayer;
@@ -30,13 +25,13 @@ public class Car : MonoBehaviour
     public Sequence sequence;
     public Sequence sequenceDummy;
     int t = 0;
-    public bool carClicked;
     bool canInsCoin;
-    public GameObject coin;
     Plane[] cameraFrustum;
     public BoxCollider meshCol;
     RaycastHit hitInfo;
-    public bool isInScene;
+    public ParticleSystem particle;
+    public List<int> check;
+    public int carCanMove;
 
     private void Start()
     {
@@ -48,6 +43,7 @@ public class Car : MonoBehaviour
 
     public void CarMovement()
     {
+        Duck.PlayParticle(particle);
         ListPosition.Add(startPos);
         MapPoint current = from;
         MapPoint last = null;
@@ -124,7 +120,7 @@ public class Car : MonoBehaviour
             Vector3 temp = ListPosition[i] - ListPosition[i - 1];
             //  (listPosition[i] - listPosition[i - 1]).magnitude / 10 :  time = distance / velocity ;
 
-            sequence.PrependCallback(() => { canInsCoin = true; });
+          //  sequence.PrependCallback(() => { canInsCoin = true; });
 
             sequence.Append(transform.DOMove(ListPosition[i], (ListPosition[i] - ListPosition[i - 1]).magnitude / 25f)
                 .OnUpdate(() =>
@@ -133,28 +129,24 @@ public class Car : MonoBehaviour
                     Vector3 angle = (dummyTarget.transform.position - transform.position).normalized;
                     float v = Mathf.Atan2(angle.z, -angle.x) * Mathf.Rad2Deg;
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, v - 90, 0), 20f);
-                    //PosToInstantiateCoin();
+                    PosToInstantiateCoin();
                 })
                 .OnComplete(() =>
                 {
                     ++t;
                 }
             ).SetEase(Ease.Linear)).SetAutoKill(true);
-
             sequenceDummy.Append(dummyTarget.DOMove(ListPosition[i], (ListPosition[i] - ListPosition[i - 1]).magnitude / 25f).SetEase(Ease.Linear)).SetAutoKill(true);
         }
     }
-    public List<int> check;
-    public int carCanMove;
+
     private void OnCollisionEnter(Collision col)
     {
 
         if (col.gameObject.CompareTag("Car"))
         {
-            Observer.Notify(EventAction.EVENT_CAR_DONE_ACTION, true);
-
             Car carPref = col.transform.GetComponent<Car>();
-            //carPref.ShakeCar(transform.forward, carPref.startPos);
+          //  carPref.ShakeCar(transform.forward, carPref.startPos);
             sequence.Pause();
             sequenceDummy.Pause();
             dummyTarget.position = transform.position;
@@ -162,7 +154,6 @@ public class Car : MonoBehaviour
             sequence = DOTween.Sequence();
             sequence.PrependInterval(delayTime);
             sequenceDummy = DOTween.Sequence();
-
             ListPosition[t + 1] = col.transform.position;
 
             for (int i = t; i >= 0; --i)
@@ -176,11 +167,10 @@ public class Car : MonoBehaviour
                 {
                     ++t;
 
-                    if (transform.position == startPos)
+                    if (this.transform.position == startPos)
                     {
                         Observer.Notify(EventAction.EVENT_CAR_DONE_ACTION, true);
                         ListPosition.Clear();
-                        carClicked = false;
                         Debug.Log("Can click");
                     }
                 })).SetAutoKill(true);
@@ -211,18 +201,15 @@ public class Car : MonoBehaviour
         }
         else
         {
-            if (canInsCoin)
+             if (!canInsCoin)
             {
 
-                Vector3 v = meshCol.transform.position - 4.5f * transform.forward + new Vector3(0, 2f, 0);
-                Vector3 g = v - 4.5f * transform.forward + new Vector3(0, 0, Random.Range(2, 7));
-                GameObject coinPref = Instantiate(coin, v, Quaternion.identity);
-                coinPref.transform.DOMove(g, 1).SetEase(Ease.OutQuad);
-                Destroy(coinPref, 1f);
-                canInsCoin = false;
-
+                Vector3 v = meshCol.transform.position - 2.5f * transform.forward + new Vector3(0, 2f, 0);
+                Debug.Log(v);
+                Observer.Notify(EventAction.EVENT_CAR_DONE_ACTION, true);
+              //  Time.timeScale = 0 ;
+                canInsCoin = true;
             }
-            isInScene = true;
         }
 
     }
@@ -259,12 +246,6 @@ public class Car : MonoBehaviour
         Debug.DrawRay(transform.position + new Vector3(0, 0.5f, 0), -transform.forward * 50f, Color.red);
         Debug.DrawRay(transform.position + new Vector3(0, 0.5f, 0), transform.forward * 50f, Color.yellow);
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-
-    }
-
 }
 
 

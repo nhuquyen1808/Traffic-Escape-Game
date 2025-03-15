@@ -1,22 +1,24 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
-{   // initial number of cloned objects
+{   
     [SerializeField] private uint initPoolSize;
     public uint InitPoolSize => initPoolSize;
-    // PooledObject prefab
     [SerializeField] private PooledObject objectToPool;
-    // store the pooled objects in stack1
     private Stack<PooledObject> stack;
-
-    private void Start()
+    /*private void Start()
     {
         SetupPool();
+    }*/
+
+    public virtual void Start()
+    {
+        
     }
 
-    private void SetupPool()
+    public void SetupPool()
     {
         if (objectToPool == null)
         {
@@ -46,20 +48,22 @@ public class ObjectPool : MonoBehaviour
             newInstance.Pool = this;
             newInstance.transform.SetParent(transform);
             newInstance.gameObject.transform.position = pos;
-
+            newInstance.gameObject.transform.localScale = Vector3.one;
+            newInstance.gameObject.SetActive(true);
             return newInstance;
         }
         // otherwise, just grab the next one from the list
         PooledObject nextInstance = stack.Pop();
         nextInstance.gameObject.transform.position = pos;
         nextInstance.gameObject.transform.rotation = rotation;
+        nextInstance.gameObject.transform.localScale = Vector3.one;
         nextInstance.gameObject.SetActive(true);
         return nextInstance;
     }
-
     public void ReturnToPool(PooledObject pooledObject)
     {
         stack.Push(pooledObject);
         pooledObject.gameObject.SetActive(false);
+        pooledObject.transform.SetParent(this.gameObject.transform);
     }
 }

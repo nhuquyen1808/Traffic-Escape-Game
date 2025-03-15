@@ -1,5 +1,6 @@
 using DevDuck;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LogicGame : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class LogicGame : MonoBehaviour
     private void CheckCanPlayGame(object obj)
     {
         isCanClick = (bool) obj;
-        Debug.Log(isCanClick);
     }
 
     void Update()
@@ -33,8 +33,13 @@ public class LogicGame : MonoBehaviour
                 if (car == null) return;
                 isCanClick = false;
                 car.CarMovement();
-                Debug.Log(car.transform.name);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Scene currentScene = SceneManager.GetActiveScene();
+            SceneManager.LoadSceneAsync(currentScene.ToString());
         }
     }
 

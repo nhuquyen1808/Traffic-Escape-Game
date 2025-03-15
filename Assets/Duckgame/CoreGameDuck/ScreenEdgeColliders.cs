@@ -66,6 +66,8 @@ namespace DevDuck
             var edgePoints = new[] { bottomLeft, topLeft, topRight, bottomRight, bottomLeft };
             edge.points = edgePoints;
         }
+
+                                                                                            
     }
 }
 

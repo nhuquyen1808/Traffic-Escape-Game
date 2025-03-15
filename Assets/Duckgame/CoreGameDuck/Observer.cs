@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using UnityEngine;
 
 namespace DevDuck
@@ -9,10 +7,25 @@ namespace DevDuck
 
     public enum EventAction
     {
-        EVENT_POPUP_SHOW,
-        EVENT_POPUP_CLOSE,
-
-        EVENT_CAR_DONE_ACTION
+        /* EVENT_POPUP_SHOW,
+         EVENT_HITTARGET_MINIGAMEHITLIPSTICK,
+         EVENT_POPUP_SHOW_WIN_DONE,
+         EVENT_POPUP_SHOW_LOSE_DONE,
+         // Game6
+         EVENT_GET_GREEN,
+         EVENT_GET_RED,
+         // Game 4
+         EVENT_CAMERA_MOVE,
+         EVENT_GET_SCORE,
+         EVENT_BOT_YELLOW_GET_SCORE,
+         EVENT_BOT_RED_GET_SCORE,
+         // Game 1
+         EVENT_DROPBUTTON_CLICKED,
+         EVENT_PLAYER_MOVE_DONE,
+         //Game 20
+         EVENT_PLAYER_BEGINSELECT,
+         EVENT_PLAYER_ENDSELECT,*/
+         EVENT_CAR_DONE_ACTION
     }
 
     public class Observer

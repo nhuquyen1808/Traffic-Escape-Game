@@ -50,4 +50,6 @@ public class SaveGameJson : MonoBehaviour
         listCubePos = readData.listCubePos;
         return readData;
     }
+    
+    
 }
